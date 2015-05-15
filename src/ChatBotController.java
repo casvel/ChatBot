@@ -58,8 +58,39 @@ public class ChatBotController
 		return result;
 	}
 
-	
-	
+	/*Obtiene el puesto de un empleado dado un nombre*/
+	static Resultado <ArrayList <String> > getPuesto(String nombre)
+	{
+		Resultado <ArrayList <String> > result = new Resultado <ArrayList <String> > (new ArrayList <String>());
+		
+		try
+		{
+			Statement st = con.createStatement();
+			
+			String consulta = "SELECT Puesto.nombre from Empleado, "
+					+ 		"Puesto where Puesto.id = Empleado.puesto_id and "
+					+ "Empleado.puesto_id = (select puesto_id from Empleado "
+					+ "where nombre = '" + nombre + "' )";
+			
+			ResultSet rs = st.executeQuery(consulta);
+			
+			while(rs.next())
+			{
+				result.Valor.add(rs.getString("nombre"));
+			}
+			
+			result.Success = true;
+			
+		}
+		catch (SQLException e)
+		{
+			result.Success = false;
+			result.Valor.add(e.toString());
+		}
+		
+		return result;
+		
+	}
 	
 	/* Obtiene todas las tareas con estado = estado
 	 * Si estado == "" regresa todas las tareas */
