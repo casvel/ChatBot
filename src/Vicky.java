@@ -16,6 +16,9 @@ public class Vicky {
 		
 		Resultado <String> ok = ChatBotController.setTarea("1", "Ir por las frituras");
 		System.out.println(ok.Valor);
+		
+		Resultado <String> jefe = ChatBotController.getBoss("4");
+		System.out.println(jefe.Valor);
 	}
 	
 }

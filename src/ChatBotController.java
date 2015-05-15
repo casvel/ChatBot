@@ -55,6 +55,8 @@ public class ChatBotController
 	}
 
 	
+	
+	
 	/* Obtiene todas las tareas con estado = estado
 	 * Si estado == "" regresa todas las tareas */
 	static Resultado<ArrayList<String>> getTareas(String estado)
@@ -81,6 +83,9 @@ public class ChatBotController
 		return result;
 	}
 
+	
+	
+	
 	
 	/* Regresa el id de una tarea dado su nombre 
 	 * Si no la encuentra regresa -1 */
@@ -154,6 +159,55 @@ public class ChatBotController
 			con.commit();
 			result.Success = true;
 			result.Valor = "Tarea asignada";
+		}
+		catch (SQLException e)
+		{
+			result.Success = false;
+			result.Valor = e.toString();
+		}
+		
+		return result;
+	}
+
+	
+	
+	
+	
+	static Resultado<String> getBoss(String empleado_id)
+	{
+		Resultado <String> result = new Resultado <String>();
+		try
+		{
+			int jefe_id = -1;
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT jefe_id "
+					+ "FROM Empleado "
+					+ "WHERE id = " + empleado_id);
+			
+			while (rs.next())
+				jefe_id = rs.getInt("jefe_id");
+			
+			if (jefe_id != -1)
+			{		
+				rs = st.executeQuery("SELECT id, nombre, paterno, materno "
+						+ "FROM Empleado "
+						+ "WHERE id = " + jefe_id);
+				
+				result.Success = true;
+				while (rs.next())
+					result.Valor = rs.getString("id") + ". " + rs.getString("nombre") + " " + rs.getString("paterno") + " " + rs.getString("materno");
+			
+				if (result.Valor == null)
+				{
+					result.Success = false;
+					result.Valor = "No tiene jefe";
+				}
+			}
+			else
+			{
+				result.Success = false;
+				result.Valor = "No se encontró el empleado";
+			}
 		}
 		catch (SQLException e)
 		{
