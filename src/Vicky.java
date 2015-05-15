@@ -19,6 +19,8 @@ public class Vicky {
 		
 		Resultado <String> jefe = ChatBotController.getBoss("4");
 		System.out.println(jefe.Valor);
+		
+		System.out.println(ChatBotController.TellJoke().Valor);
 	}
 	
 }

@@ -172,7 +172,7 @@ public class ChatBotController
 	
 	
 	
-	
+	/* Regresa el jefe del empleado */
 	static Resultado<String> getBoss(String empleado_id)
 	{
 		Resultado <String> result = new Resultado <String>();
@@ -216,5 +216,32 @@ public class ChatBotController
 		}
 		
 		return result;
+	}
+
+
+
+	/* Tells a joke */
+	static Resultado<String> TellJoke()
+	{
+		String[] chiste = {"Why do Java developers wear glasses? Because they can't C#",
+				"\"Knock, knock.\"\n\"Who’s there?\"\nvery long pause...\n\"Java.\"",
+				"99 little bugs in the code\n99 bugs in the code\npatch one down, compile it around\n138 bugs in the code",
+				"If you put a million monkeys at a million keyboards, one of them will eventually write a Java program.\nThe rest of them will write Perl programs.",
+				"Why do programmers always mix up Halloween and Christmas?. Because Oct 31 == Dec 25!",
+				"A SQL query goes into a bar, walks up to two tables and asks, \"Can I join you?\"",
+				"How many prolog programmers does it take to change a lightbulb?. Yes",
+				"To understand what recursion is, you must first understand recursion.",
+				"Why programmers like UNIX: unzip && strip && touch && finger && grep && mount && fsck && more && yes && fsck && fsck && fsck && umount && sleep",
+				"There is no logical foundation of mathematics, and Gödel has proved it!",
+				"A topologist is a person who doesn't know the difference between a coffee cup and a doughnut.",
+				"Asked if he believes in one God, a mathematician answered: \"Yes, up to isomorphism.\"",
+				"How to proof it:\n\tProof by intimidation: \"Trivial.\"\n\tProof by reduction to the wrong problem: \"To see that infinite-dimensional colored cycle stripping is decidable, we reduce it to the halting problem.\"\n\tProof by eminent authority: \"I saw Karp in the elevator and he said it was probably NP- complete.\"",
+				"All positive integers are interesting.\nProof: Assume the contrary. Then there is a lowest non-interesting positive integer. But, hey, that's pretty interesting! A contradiction.",
+				"The B in Benoît B. Mandelbrot stand for Benoît B. Mandelbrot.",
+				"Why did the chicken cross the mobius strip?. To get to the same side.",
+				"There are exactly two types of mathematical objects: trivial ones, and those which have not yet been proven."};
+	
+		Random rand = new Random(System.currentTimeMillis());
+		return new Resultado<String>(true, chiste[rand.nextInt(chiste.length)]);
 	}
 }
