@@ -6,19 +6,16 @@ public class Vicky {
 	{
 		ChatBotController.Conecta();
 		
-		/*ArrayList<String> programadores = ChatBotController.getMiembros("Programador");
-		if (programadores.get(0) == "ERROR")
-			System.out.println("ERROR:" +  programadores.get(1));
-		else
-			for (int i = 0; i < programadores.size(); ++i)
-				System.out.println(programadores.get(i));*/
+		Resultado<ArrayList<String>> programadores = ChatBotController.getEmpleados("programador");
+		for (int i = 0; i < programadores.Valor.size(); ++i)
+			System.out.println(programadores.Valor.get(i));
 		
-		ArrayList<String> tareas = ChatBotController.getTareas("0");
-		if (tareas.get(0) == "ERROR")
-			System.out.println("ERROR:" +  tareas.get(1));
-		else
-			for (int i = 0; i < tareas.size(); ++i)
-				System.out.println(tareas.get(i));
+		Resultado<ArrayList<String>> tareas = ChatBotController.getTareas("1");
+		for (int i = 0; i < tareas.Valor.size(); ++i)
+			System.out.println(tareas.Valor.get(i));
+		
+		Resultado <String> ok = ChatBotController.setTarea("1", "Ir por las frituras");
+		System.out.println(ok.Valor);
 	}
 	
 }
