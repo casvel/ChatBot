@@ -3,7 +3,7 @@ import java.util.*;
 
 public class ChatBotController 
 {
-	static Connection con;
+	private static Connection con;
 	
 	/* Conexión con la base de datos*/
 	static void Conecta()
@@ -22,9 +22,6 @@ public class ChatBotController
 			System.out.println(e);
 		}
 	}
-	
-	
-	
 	
 	/* Obtiene los empleados dado un puesto.
 	 * Si puesto == "" regresa todos los empleados */
@@ -118,10 +115,6 @@ public class ChatBotController
 		return result;
 	}
 
-	
-	
-	
-	
 	/* Regresa el id de una tarea dado su nombre 
 	 * Si no la encuentra regresa -1 */
 	private static int getIdTarea(String tarea_nombre)
@@ -228,9 +221,6 @@ public class ChatBotController
 		
 		return result;
 	}
-
-	
-	
 	
 	/* Regresa el jefe del empleado */
 	static Resultado<String> getBoss(int empleado_id)
@@ -277,10 +267,8 @@ public class ChatBotController
 		
 		return result;
 	}
-
-
 	
-	
+	/* Termina la tarea asociada al empleado */
 	static Resultado<String> terminarTareaEmpleado(int empleado_id)
 	{
 		int tarea_id = getTareaEmpleado(empleado_id);
@@ -313,8 +301,6 @@ public class ChatBotController
 		return result;
 	}
 	
-	
-
 	/* Tells a joke */
 	static Resultado<String> tellJoke()
 	{
