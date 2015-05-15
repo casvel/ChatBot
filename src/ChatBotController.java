@@ -43,19 +43,26 @@ public class ChatBotController
 		return result;
 	}
 	
-	static void Prueba()
+	static ArrayList<String> getTareas(String estado)
 	{
+		ArrayList<String> result = new ArrayList<String>();
 		try
 		{
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM puesto");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT nombre "
+					+ "FROM Tarea "
+					+ "WHERE estado =" + estado + "");
+			
 			while (rs.next())
-				System.out.println(rs.getString("nombre"));
+				result.add(rs.getString("nombre"));
 		}
 		catch (SQLException e)
 		{
-			System.out.println(e);
+			result.add("ERROR");
+			result.add(e.toString());
 		}
+		
+		return result;
 	}
 	
 }
