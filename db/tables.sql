@@ -1,0 +1,21 @@
+CREATE TABLE Empleado (
+id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(50),
+paterno VARCHAR(50),
+materno VARCHAR(50),
+edad INT(11),
+tarea_id INT(11),
+jefe_id INT(11),
+puesto_id INT(11),
+) 
+
+CREATE TABLE Puesto(
+id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(50)
+)
+
+CREATE TABLE Tarea(
+id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(50),
+estado INT(11)
+)

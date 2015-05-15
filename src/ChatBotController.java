@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.*;
 
 public class ChatBotController 
 {
@@ -18,6 +19,28 @@ public class ChatBotController
 		{
 			System.out.println(e);
 		}
+	}
+	
+	static ArrayList<String> getMiembros(String rol)
+	{
+		ArrayList<String> result = new ArrayList<String>();
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT Empleado.nombre, Empleado.paterno, Empleado.materno "
+					+ "FROM Empleado, Puesto "
+					+ "WHERE Empleado.puesto_id = Puesto.id AND Puesto.nombre ='" + rol + "'");
+			
+			while (rs.next())
+				result.add(rs.getString("nombre") + ' ' + rs.getString("paterno") + ' ' + rs.getString("materno"));
+		}
+		catch (SQLException e)
+		{
+			result.add("ERROR");
+			result.add(e.toString());
+		}
+		
+		return result;
 	}
 	
 	static void Prueba()
