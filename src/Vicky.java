@@ -20,9 +20,19 @@ public class Vicky {
 		Resultado <String> jefe = ChatBotController.getBoss(4);
 		System.out.println(jefe.Valor);
 		
-		System.out.println(ChatBotController.tellJoke().Valor);
 		
 		System.out.println(ChatBotController.terminarTareaEmpleado(1).Valor);
+
+		String unPuesto = "Luke";
+		Resultado <ArrayList <String> > persona = ChatBotController.getPuesto(unPuesto);
+		
+		System.out.println("Ahora vamos a ver que hace " +unPuesto);
+		System.out.println("Él es el: ");
+		
+		for (int i = 0; i < persona.Valor.size(); ++i)
+			System.out.println(persona.Valor.get(i));
+		
+		System.out.println(ChatBotController.tellJoke().Valor);
 	}
 	
 }
