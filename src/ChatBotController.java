@@ -3,8 +3,9 @@ import java.util.*;
 
 public class ChatBotController 
 {
-	static Connection con;
+	private static Connection con;
 	
+	/* Conexión con la base de datos*/
 	static void Conecta()
 	{
 		String host = "jdbc:mysql://localhost:3306/Empresa";
@@ -90,7 +91,7 @@ public class ChatBotController
 	
 	/* Obtiene todas las tareas con estado = estado
 	 * Si estado == "" regresa todas las tareas */
-	static Resultado<ArrayList<String>> getTareas(String estado)
+	static Resultado<ArrayList<String>> getTareas(int estado)
 	{
 		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		try
@@ -114,8 +115,7 @@ public class ChatBotController
 		return result;
 	}
 
-	
-	
+		
 	static Boolean logIn(int id, String cad)
 	{
 		String passd = "";
@@ -181,7 +181,7 @@ public class ChatBotController
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT estado "
 					+ "FROM Tarea "
-					+ "WHERE id = '" + tarea_id + "'");
+					+ "WHERE id = " + tarea_id);
 			
 			if (rs.next())
 				estado = rs.getInt("estado");
@@ -194,8 +194,30 @@ public class ChatBotController
 		return estado;
 	}
 	
+	/* Regresa la tarea asignada al empleado*/
+	private static int getTareaEmpleado(int empleado_id)
+	{
+		int tarea_id = -1;
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT tarea_id "
+					+ "FROM Empleado "
+					+ "WHERE id = " + empleado_id + " AND tarea_id IS NOT NULL");
+			
+			if (rs.next())
+				tarea_id = rs.getInt("tarea_id");
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		
+		return tarea_id;
+	}
+	
 	/* Asigna una tarea a un empleado */
-	static Resultado<String> setTarea(String empleado_id, String tarea_nombre)
+	static Resultado<String> setTarea(int empleado_id, String tarea_nombre)
 	{
 		int tarea_id = getIdTarea(tarea_nombre);
 		
@@ -206,6 +228,9 @@ public class ChatBotController
 		
 		if (tarea_estado == 2)
 			return new Resultado<String>(false, "Tarea ya completada");
+		
+		if (getTareaEmpleado(empleado_id) != -1)
+			return new Resultado<String>(false, "Ya tienes tarea asignada");
 		
 		Resultado <String> result = new Resultado <String>();
 		try
@@ -230,12 +255,9 @@ public class ChatBotController
 		
 		return result;
 	}
-
-	
-	
 	
 	/* Regresa el jefe del empleado */
-	static Resultado<String> getBoss(String empleado_id)
+	static Resultado<String> getBoss(int empleado_id)
 	{
 		Resultado <String> result = new Resultado <String>();
 		try
@@ -279,11 +301,42 @@ public class ChatBotController
 		
 		return result;
 	}
-
-
-
+	
+	/* Termina la tarea asociada al empleado */
+	static Resultado<String> terminarTareaEmpleado(int empleado_id)
+	{
+		int tarea_id = getTareaEmpleado(empleado_id);
+		
+		if (tarea_id == -1)
+			return new Resultado<String>(false, "No tienes tarea asignada");
+			
+		Resultado<String> result = new Resultado<String>();
+		try
+		{
+			Statement st = con.createStatement();
+			st.execute("UPDATE Empleado "
+					+ "SET tarea_id = NULL "
+					+ "WHERE id = " + empleado_id);
+			st.execute("UPDATE Tarea "
+					+ "SET estado = 2 "
+					+ "WHERE id = " + tarea_id);
+			
+			con.commit();
+			result.Success = true;
+			result.Valor = "Tarea terminada.";
+			
+		}
+		catch (SQLException e)
+		{
+			result.Success = false;
+			result.Valor = e.toString();
+		}
+		
+		return result;
+	}
+	
 	/* Tells a joke */
-	static Resultado<String> TellJoke()
+	static Resultado<String> tellJoke()
 	{
 		String[] chiste = {"Why do Java developers wear glasses? Because they can't C#",
 				"\"Knock, knock.\"\n\"Who’s there?\"\nvery long pause...\n\"Java.\"",
