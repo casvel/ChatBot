@@ -25,7 +25,7 @@ public class ChatBotController
 	
 	/* Obtiene los empleados dado un puesto.
 	 * Si puesto == "" regresa todos los empleados */
-	static Resultado<ArrayList<String>> getEmpleados(String puesto)
+	public static Resultado<ArrayList<String>> getEmpleados(String puesto)
 	{
 		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		try
@@ -56,7 +56,7 @@ public class ChatBotController
 	}
 
 	/*Obtiene el puesto de un empleado dado un nombre*/
-	static Resultado <ArrayList <String> > getPuesto(String nombre)
+	public static Resultado <ArrayList <String> > getPuesto(String nombre)
 	{
 		Resultado <ArrayList <String> > result = new Resultado <ArrayList <String> > (new ArrayList <String>());
 		
@@ -91,7 +91,7 @@ public class ChatBotController
 	
 	/* Obtiene todas las tareas con estado = estado
 	 * Si estado == "" regresa todas las tareas */
-	static Resultado<ArrayList<String>> getTareas(int estado)
+	public static Resultado<ArrayList<String>> getTareas(int estado)
 	{
 		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		try
@@ -217,7 +217,7 @@ public class ChatBotController
 	}
 	
 	/* Asigna una tarea a un empleado */
-	static Resultado<String> setTarea(int empleado_id, String tarea_nombre)
+	public static Resultado<String> setTarea(int empleado_id, String tarea_nombre)
 	{
 		int tarea_id = getIdTarea(tarea_nombre);
 		
@@ -257,7 +257,7 @@ public class ChatBotController
 	}
 	
 	/* Regresa el jefe del empleado */
-	static Resultado<String> getBoss(int empleado_id)
+	public static Resultado<String> getBoss(int empleado_id)
 	{
 		Resultado <String> result = new Resultado <String>();
 		try
@@ -303,7 +303,7 @@ public class ChatBotController
 	}
 	
 	/* Termina la tarea asociada al empleado */
-	static Resultado<String> terminarTareaEmpleado(int empleado_id)
+	public static Resultado<String> terminarTareaEmpleado(int empleado_id)
 	{
 		int tarea_id = getTareaEmpleado(empleado_id);
 		
@@ -336,7 +336,7 @@ public class ChatBotController
 	}
 	
 	/* Tells a joke */
-	static Resultado<String> tellJoke()
+	public static Resultado<String> tellJoke()
 	{
 		String[] chiste = {"Why do Java developers wear glasses? Because they can't C#",
 				"\"Knock, knock.\"\n\"Who’s there?\"\nvery long pause...\n\"Java.\"",
