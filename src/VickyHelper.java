@@ -21,7 +21,7 @@ public class VickyHelper {
 				if (A.charAt(i-1) == B.charAt(j-1))
 					dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1])+1);
 				else
-					dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1])+1;
+					dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1]))+1;
 		
 		//System.out.println(A + " " + B + ": " + dp[A.length()][B.length()]);
 		return dp[A.length()][B.length()];

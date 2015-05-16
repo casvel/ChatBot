@@ -69,6 +69,8 @@ public class DBVicky
 		Grafo.add(creaGrafo("lider_proyecto.txt", "Lider", ChatBotController.class.getMethod("getEmpleados", String.class)));
 		// Integrantes equipo //
 		Grafo.add(creaGrafo("equipo.txt", "", ChatBotController.class.getMethod("getEmpleados", String.class)));
+		// Programador //
+		Grafo.add(creaGrafo("programadores.txt", "Programador", ChatBotController.class.getMethod("getEmpleados", String.class)));
 		// Chiste //
 		Grafo.add(creaGrafo("joke.txt", null, ChatBotController.class.getMethod("tellJoke")));
 		
