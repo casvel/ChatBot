@@ -6,6 +6,7 @@ public class VickyHelper {
 
 	private static String[] word;
 	private static HashMap<String, Boolean> visit;
+	private static HashMap<String, ArrayList<String>> AdjList;
 	
 	private static int editDistance(String A, String B)
 	{
@@ -38,7 +39,7 @@ public class VickyHelper {
 		visit.put(u, true);
 		
 		String method = null;
-		for (String v : DBVicky.AdjList.get(u))
+		for (String v : AdjList.get(u))
 		{
 			if (DBVicky.Sinonimos.get(v) != null)
 			{
@@ -64,7 +65,7 @@ public class VickyHelper {
 		return method;
 	}
 	
-	public static String procesaQuery(String query)
+	public static Firma procesaQuery(String query)
 	{
 		query = "$ " + query.replace('¿', ' ').replace('?', ' ').replace('.', ' ').trim();
 		word = query.split(" ");
@@ -73,9 +74,15 @@ public class VickyHelper {
 			System.out.println(word[i]);
 		System.out.println();*/
 		
-		visit = new HashMap<String, Boolean>();	
-		String terminal = dfs(word[0], 0);
+		for (int i = 0; i < DBVicky.Grafo.size(); ++i)
+		{
+			visit = new HashMap<String, Boolean>();	
+			AdjList = DBVicky.Grafo.get(i);
+			String terminal = dfs(word[0], 0);
+			if (terminal != null)
+				return DBVicky.Terminales.get(i).get(terminal);
+		}
 		
-		return terminal;
+		return null;
 	}
 }

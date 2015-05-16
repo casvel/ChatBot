@@ -7,8 +7,8 @@ import java.util.*;
 public class DBVicky 
 {
 	static HashMap<String, String[]> Sinonimos;
-	static HashMap<String, ArrayList<String>> AdjList;
-	static HashMap<String, Firma> Terminales;
+	static ArrayList<HashMap<String, ArrayList<String>>> Grafo;
+	static ArrayList<HashMap<String, Firma>> Terminales;
 	
 	static void initSinonimos()
 	{
@@ -17,10 +17,17 @@ public class DBVicky
 		Sinonimos.put("lider", new String[]{"lider", "líder", "encargado", "jefe"});
 		Sinonimos.put("quien", new String[]{"quien", "quién"});
 		Sinonimos.put("cuentame", new String[]{"cuentame", "cuéntame"});
+		Sinonimos.put("quienes", new String[]{"quienes", "quiénes"});
+		Sinonimos.put("integrantes", new String[]{"miembros", "integrantes"});
 	}
 	
-	private static void agregaGrafo(String archivo, String argumentos, Method method) throws NoSuchMethodException, SecurityException, IOException
+	private static HashMap<String, ArrayList<String>> creaGrafo(String archivo, String argumentos, Method method) throws NoSuchMethodException, SecurityException, IOException
 	{
+		HashMap<String, ArrayList<String>> AdjList = new HashMap<String, ArrayList<String>>();
+		HashMap<String, Firma> terminales = new HashMap<String, Firma>();
+		
+		AdjList.put("$", new ArrayList<String>());
+		
 		String line;
 		BufferedReader br;
 		
@@ -30,8 +37,8 @@ public class DBVicky
 		String[] T = line.split(" ");
 		for (String t: T)
 		{
-			Terminales.put(t, new Firma(method, new ArrayList<String>()));
-			Terminales.get(t).args.add(argumentos);
+			terminales.put(t, new Firma(method, new ArrayList<String>()));
+			terminales.get(t).args.add(argumentos);
 		}
 		
 		while (line != null)
@@ -48,20 +55,22 @@ public class DBVicky
 		}
 		
 		br.close();
+		
+		Terminales.add(terminales);
+		return AdjList;
 	}
 	
 	static void initGrafo() throws NoSuchMethodException, SecurityException, IOException
 	{
-		AdjList = new HashMap<String, ArrayList<String>>();
-		Terminales = new HashMap<String, Firma>();
-		
-		AdjList.put("$", new ArrayList<String>());
-		
+		Grafo = new ArrayList<HashMap<String, ArrayList<String>>>();
+		Terminales = new ArrayList<HashMap<String, Firma>>();
 		
 		// Lider del proyecto //
-		agregaGrafo("lider_proyecto.txt", "Lider", ChatBotController.class.getMethod("getEmpleados", String.class));
+		Grafo.add(creaGrafo("lider_proyecto.txt", "Lider", ChatBotController.class.getMethod("getEmpleados", String.class)));
+		// Integrantes equipo //
+		Grafo.add(creaGrafo("equipo.txt", "", ChatBotController.class.getMethod("getEmpleados", String.class)));
 		// Chiste //
-		agregaGrafo("joke.txt", null, ChatBotController.class.getMethod("tellJoke"));
+		Grafo.add(creaGrafo("joke.txt", null, ChatBotController.class.getMethod("tellJoke")));
 		
 		/*for (String u : AdjList.keySet())
 		{
