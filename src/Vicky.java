@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class Vicky {
@@ -35,7 +34,6 @@ public class Vicky {
 		for (int i = 0; i < persona.Valor.size(); ++i)
 			System.out.println(persona.Valor.get(i));
 		
-<<<<<<< HEAD
 		String cad = "mama";
 		
 		Boolean logo  = ChatBotController.logIn(4, cad);
@@ -46,8 +44,8 @@ public class Vicky {
 			System.out.println("Contraseña o id incorrecto, verfique");
 		
 		System.out.println(ChatBotController.tellJoke().Valor);
-=======
 		System.out.println(ChatBotController.tellJoke().Valor);*/
+		
 		
 		Scanner sc = new Scanner(System.in);
 		DBVicky.initSinonimos();
@@ -55,12 +53,11 @@ public class Vicky {
 		
 		while (true)
 		{
-			String terminal = VickyHelper.procesaQuery(sc.nextLine());
+			Firma firma = VickyHelper.procesaQuery(sc.nextLine());
 			//System.out.println(terminal);
 			
-			if (terminal != null)
+			if (firma != null)
 			{
-				Firma firma = DBVicky.Terminales.get(terminal);
 				//System.out.println(firma.method.toString());
 				
 				if (firma.method.equals(ChatBotController.class.getMethod("getEmpleados", String.class)))
@@ -68,7 +65,34 @@ public class Vicky {
 					if (firma.args.get(0) == "Lider")
 					{
 						Resultado <ArrayList <String>> result = (Resultado<ArrayList<String>>)firma.method.invoke(null, firma.args.toArray()); 
-						System.out.println("El líder del proyecto es: " + result.Valor.get(0));
+						if (result.Success == true)
+							System.out.println("El líder del proyecto es:\n" + result.Valor.get(0));
+						else
+							System.out.println("Ups, parece que hubo un error con mi base de datos");
+					}
+					else if (firma.args.get(0) == "Programador")
+					{
+						Resultado <ArrayList <String>> result = (Resultado<ArrayList<String>>)firma.method.invoke(null, firma.args.toArray()); 
+						if (result.Success == true)
+						{
+							System.out.println("Los programadores del equipo son:");
+							for (String p: result.Valor)
+								System.out.println(p);
+						}
+						else
+							System.out.println("Ups, parece que hubo un error con mi base de datos");
+					}
+					else if (firma.args.get(0) == "")
+					{
+						Resultado <ArrayList <String>> result = (Resultado<ArrayList<String>>)firma.method.invoke(null, firma.args.toArray());
+						if (result.Success == true)
+						{
+							System.out.println("Los integrantes del equipo de desarrollo son:");
+							for (String p: result.Valor)
+								System.out.println(p);
+						}
+						else
+							System.out.println("Ups, parece que hubo un error con mi base de datos");
 					}
 				}
 				else if (firma.method.equals(ChatBotController.class.getMethod("tellJoke")))

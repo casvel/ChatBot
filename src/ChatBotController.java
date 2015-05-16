@@ -115,7 +115,7 @@ public class ChatBotController
 		return result;
 	}
 
-		
+	/*Metodo para el logueo de un empleado*/	
 	static Boolean logIn(int id, String cad)
 	{
 		String passd = "";
@@ -256,6 +256,26 @@ public class ChatBotController
 		return result;
 	}
 	
+	public static String getWifi()
+	{
+		String wifi = "";
+		try{
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery("SELECT prop FROM varios where objeto = "
+				+ "'wifi'");
+		
+		if(rs.next())
+			wifi = rs.getString("prop");
+		}
+		catch(SQLException e)
+		{
+			System.out.println(e);
+		}
+		
+		
+		return wifi;
+		
+	}
 	/* Regresa el jefe del empleado */
 	public static Resultado<String> getBoss(int empleado_id)
 	{
@@ -302,6 +322,30 @@ public class ChatBotController
 		return result;
 	}
 	
+	/*Metodo para saber quienes son los subordinados del jefe*/
+	public static Resultado<ArrayList<String>> getSubordinados(String persona)
+	{
+		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select nombre from Empleado "
+					+ "where jefe_id = (select id from Empleado where nombre = '"
+					+ persona + "')");
+			
+			while (rs.next())
+				result.Valor.add(rs.getString("nombre"));
+			
+			result.Success = true;
+		}
+		catch (SQLException e)
+		{
+			result.Success = false;
+			result.Valor.add(e.toString());
+		}
+		
+		return result;
+	}
 	/* Termina la tarea asociada al empleado */
 	public static Resultado<String> terminarTareaEmpleado(int empleado_id)
 	{
@@ -358,5 +402,13 @@ public class ChatBotController
 	
 		Random rand = new Random(System.currentTimeMillis());
 		return new Resultado<String>(true, chiste[rand.nextInt(chiste.length)]);
+	}
+	
+	public static Resultado <String> autoconciente()
+	{
+		String []conciente = {"¿Tú puedes demostrar que lo eres?","Es algo complicado",
+				"Eso es una pregunta díficil"};
+		Random rand = new Random(System.currentTimeMillis());
+		return new Resultado <String> (true, conciente[rand.nextInt(conciente.length)]);
 	}
 }
