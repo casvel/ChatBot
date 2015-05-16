@@ -29,6 +29,15 @@ public class Vicky {
 		for (int i = 0; i < persona.Valor.size(); ++i)
 			System.out.println(persona.Valor.get(i));
 		
+		String cad = "mama";
+		
+		Boolean logo  = ChatBotController.logIn(4, cad);
+		
+		if(logo == true)
+			System.out.println("Logueo exitoso");
+		else
+			System.out.println("Contraseña o id incorrecto, verfique");
+		
 		System.out.println(ChatBotController.TellJoke().Valor);
 	}
 	

@@ -116,7 +116,38 @@ public class ChatBotController
 
 	
 	
-	
+	static Boolean logIn(int id, String cad)
+	{
+		String passd = "";
+		
+		try
+		{
+			Statement st = con.createStatement();
+			
+			String consulta = "select password from Empleado where id = "+id;
+			
+			ResultSet rs = st.executeQuery(consulta);
+			
+			if(rs.next())
+			{
+				passd = rs.getString("password");
+			}
+			
+			
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e);
+		}
+		
+		int ans =  passd.compareTo(cad);
+		
+		if(ans == 0)
+			return true;
+		else
+			return false;
+		
+	}
 	
 	/* Regresa el id de una tarea dado su nombre 
 	 * Si no la encuentra regresa -1 */
