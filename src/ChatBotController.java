@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class ChatBotController 
 {
@@ -41,15 +42,20 @@ public class ChatBotController
 				rs = st.executeQuery("SELECT id, nombre, paterno, materno "
 						+ "FROM Empleado");
 			
+			int num = 0;
 			while (rs.next())
-				result.Valor.add(rs.getString("id") + ". " + rs.getString("nombre") + ' ' + rs.getString("paterno") + ' ' + rs.getString("materno"));
-		
+			{
+				num++;
+				result.Valor.add(rs.getString("id") + ". " + rs.getString("nombre") + ' ' + rs.getString("paterno") + ' ' + rs.getString("materno") + "\n");
+			}
+			result.Valor.add(0, (num > 1 ? "Las personas" : "La persona") + " con el puesto de " + puesto.toLowerCase() + (num > 1 ? " son" : " es") + ":\n");
+			
 			result.Success = true;
 		}
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor.add(e.toString());
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		return result;
@@ -65,16 +71,13 @@ public class ChatBotController
 			Statement st = con.createStatement();
 			
 			String consulta = "SELECT Puesto.nombre from Empleado, "
-					+ 		"Puesto where Puesto.id = Empleado.puesto_id and "
+					+ "Puesto where Puesto.id = Empleado.puesto_id and "
 					+ "Empleado.puesto_id = (select puesto_id from Empleado "
 					+ "where nombre = '" + nombre + "' )";
 			
 			ResultSet rs = st.executeQuery(consulta);
-			
-			while(rs.next())
-			{
-				result.Valor.add(rs.getString("nombre"));
-			}
+			if (rs.next())
+				result.Valor.add(nombre + " tiene el puesto de " + rs.getString("nombre") + "\n");
 			
 			result.Success = true;
 			
@@ -82,7 +85,7 @@ public class ChatBotController
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor.add(e.toString());
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		return result;
@@ -90,16 +93,26 @@ public class ChatBotController
 	}
 	
 	/* Obtiene todas las tareas con estado = estado
-	 * Si estado == "" regresa todas las tareas */
+	 * Si estado == -1 regresa todas las tareas */
 	public static Resultado<ArrayList<String>> getTareas(int estado)
 	{
 		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		try
 		{
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("SELECT nombre "
+			ResultSet rs;
+			if (estado != -1)
+				rs = st.executeQuery("SELECT nombre "
 					+ "FROM Tarea "
 					+ "WHERE estado =" + estado + "");
+			else
+				rs = st.executeQuery("SELECT nombre "
+					+ "FROM Tarea");
+			
+			if (estado != -1)
+				result.Valor.add("Las tareas en ese estado son:\n");
+			else
+				result.Valor.add("Todas las tareas son:\n");
 			
 			while (rs.next())
 				result.Valor.add(rs.getString("nombre"));
@@ -109,44 +122,10 @@ public class ChatBotController
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor.add(e.toString());
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		return result;
-	}
-
-	/*Metodo para el logueo de un empleado*/	
-	static Boolean logIn(int id, String cad)
-	{
-		String passd = "";
-		
-		try
-		{
-			Statement st = con.createStatement();
-			
-			String consulta = "select password from Empleado where id = "+id;
-			
-			ResultSet rs = st.executeQuery(consulta);
-			
-			if(rs.next())
-			{
-				passd = rs.getString("password");
-			}
-			
-			
-		}
-		catch (SQLException e)
-		{
-			System.out.println(e);
-		}
-		
-		int ans =  passd.compareTo(cad);
-		
-		if(ans == 0)
-			return true;
-		else
-			return false;
-		
 	}
 	
 	/* Regresa el id de una tarea dado su nombre 
@@ -217,106 +196,140 @@ public class ChatBotController
 	}
 	
 	/* Asigna una tarea a un empleado */
-	public static Resultado<String> setTarea(int empleado_id, String tarea_nombre)
+	public static Resultado<ArrayList<String>> setTarea(String tarea_nombre)
 	{
-		int tarea_id = getIdTarea(tarea_nombre);
+		int empleado_id = Vicky.empleado_id;
+		String[] aux = tarea_nombre.split(":");
+		tarea_nombre = aux[0];
+		for (int i = 1; i < aux.length; ++i)
+			tarea_nombre += ' ' + aux[i];
 		
+		Resultado <ArrayList <String>> result = new Resultado <ArrayList <String>>(new ArrayList<String>());
+		
+		int tarea_id = getIdTarea(tarea_nombre);
 		if (tarea_id == -1)
-			return new Resultado<String>(false, "No se encontró la tarea");
+		{
+			result.Success = false;
+			result.Valor.add("No se encontró la tarea.\n");
+			return result;
+		}
 		
 		int tarea_estado = getEstadoTarea(tarea_id);
-		
-		if (tarea_estado == 2)
-			return new Resultado<String>(false, "Tarea ya completada");
+		if (tarea_estado != 0)
+		{
+			result.Success = false;
+			result.Valor.add("Tarea ya completada o en proceso.\n");
+			return result;
+		}
 		
 		if (getTareaEmpleado(empleado_id) != -1)
-			return new Resultado<String>(false, "Ya tienes tarea asignada");
+		{
+			result.Success = false;
+			result.Valor.add("Ya tienes tarea asignada.\n");
+			return result;
+		}
 		
-		Resultado <String> result = new Resultado <String>();
 		try
 		{
 			Statement st = con.createStatement();
 			st.execute("UPDATE Empleado "
 					+ "SET tarea_id = " + tarea_id + " "
 					+ "WHERE id = " + empleado_id);
+			
 			st.execute("UPDATE Tarea "
 					+ "SET estado = 1 "
 					+ "WHERE id = " + tarea_id);
 			
 			con.commit();
 			result.Success = true;
-			result.Valor = "Tarea asignada";
+			result.Valor.add("La tarea \"" + tarea_nombre + "\" se te fue asignada.\n");
 		}
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor = e.toString();
+			result.Valor.add(e.toString());
 		}
 		
 		return result;
 	}
 	
-	public static String getWifi()
+	public static Resultado<ArrayList<String>> getWifi()
 	{
+		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		String wifi = "";
-		try{
-		Statement st = con.createStatement();
-		ResultSet rs = st.executeQuery("SELECT prop FROM varios where objeto = "
-				+ "'wifi'");
-		
-		if(rs.next())
-			wifi = rs.getString("prop");
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT prop FROM varios where objeto = "
+					+ "'wifi'");
+			
+			if(rs.next())
+				wifi = rs.getString("prop");
+			
+			if (wifi != "")
+			{
+				result.Success = true;
+				result.Valor.add("La contraseña es: " + wifi + "\n");
+			}
+			else
+			{
+				result.Success = false;
+				result.Valor.add("No tenemos wifi\n");
+			}
 		}
 		catch(SQLException e)
 		{
-			System.out.println(e);
+			result.Success = false;
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		
-		return wifi;
+		return result;
 		
 	}
+	
 	/* Regresa el jefe del empleado */
-	public static Resultado<String> getBoss(int empleado_id)
+	public static Resultado<ArrayList<String>> getBoss(String empleado_nombre)
 	{
-		Resultado <String> result = new Resultado <String>();
+		Resultado <ArrayList<String>> result = new Resultado <ArrayList<String>>(new ArrayList<String>());
 		try
 		{
 			int jefe_id = -1;
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery("SELECT jefe_id "
 					+ "FROM Empleado "
-					+ "WHERE id = " + empleado_id);
+					+ "WHERE nombre = '" + empleado_nombre + "'");
 			
 			while (rs.next())
 				jefe_id = rs.getInt("jefe_id");
 			
-			if (jefe_id != -1)
+			if (jefe_id > 0)
 			{		
 				rs = st.executeQuery("SELECT id, nombre, paterno, materno "
 						+ "FROM Empleado "
 						+ "WHERE id = " + jefe_id);
 				
 				result.Success = true;
+				result.Valor.add("Su jefe es:\n");
 				while (rs.next())
-					result.Valor = rs.getString("id") + ". " + rs.getString("nombre") + " " + rs.getString("paterno") + " " + rs.getString("materno");
+					result.Valor.add(rs.getString("id") + ". " + rs.getString("nombre") + " " + rs.getString("paterno") + " " + rs.getString("materno") + "\n");
 			
-				if (result.Valor == null)
-				{
-					result.Success = false;
-					result.Valor = "No tiene jefe";
-				}
+			}
+			else if (jefe_id == 0)
+			{
+				result.Success = false;
+				result.Valor.add("No tiene jefe\n");
 			}
 			else
 			{
 				result.Success = false;
-				result.Valor = "No se encontró el empleado";
+				result.Valor.add("No se encontró el empleado\n");
 			}
 		}
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor = e.toString();
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		return result;
@@ -329,32 +342,60 @@ public class ChatBotController
 		try
 		{
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select nombre from Empleado "
-					+ "where jefe_id = (select id from Empleado where nombre = '"
-					+ persona + "')");
 			
-			while (rs.next())
-				result.Valor.add(rs.getString("nombre"));
+			int id = -1;
+			ResultSet rs = st.executeQuery("SELECT id "
+					+ "FROM Empleado "
+					+ "WHERE nombre = '" + persona + "'");
+			
+			if (rs.next())
+				id = rs.getInt("id");
+			
+			if (id == -1)
+			{
+				result.Success = false;
+				result.Valor.add("No pude encontrar a " + persona + "\n");
+				return result;
+			}
+			
+			rs = st.executeQuery("select nombre, paterno, materno from Empleado "
+					+ "where jefe_id = "+ id);
 			
 			result.Success = true;
+			result.Valor.add(persona + " está a cargo de:\n");
+			while (rs.next())
+				result.Valor.add(rs.getString("nombre") + " " + rs.getString("paterno") + " " + rs.getString("materno") + "\n");
+			
+			if (result.Valor.size() == 1)
+			{
+				result.Success = false;
+				result.Valor.clear();
+				result.Valor.add("No tiene subordinados\n");
+			}
 		}
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor.add(e.toString());
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		return result;
 	}
+	
 	/* Termina la tarea asociada al empleado */
-	public static Resultado<String> terminarTareaEmpleado(int empleado_id)
+	public static Resultado<ArrayList<String>> terminarTareaEmpleado()
 	{
+		int empleado_id = Vicky.empleado_id;
+		Resultado <ArrayList <String>> result = new Resultado <ArrayList<String>>(new ArrayList<String>());
 		int tarea_id = getTareaEmpleado(empleado_id);
 		
 		if (tarea_id == -1)
-			return new Resultado<String>(false, "No tienes tarea asignada");
-			
-		Resultado<String> result = new Resultado<String>();
+		{
+			result.Success = false;
+			result.Valor.add("Mentiras. No tienes tarea asignada.\n");
+			return result;
+		}	
+		
 		try
 		{
 			Statement st = con.createStatement();
@@ -367,20 +408,175 @@ public class ChatBotController
 			
 			con.commit();
 			result.Success = true;
-			result.Valor = "Tarea terminada.";
+			result.Valor.add("Tarea marcada como terminada.\n");
 			
 		}
 		catch (SQLException e)
 		{
 			result.Success = false;
-			result.Valor = e.toString();
+			result.Valor.add(e.toString() + "\n");
 		}
 		
 		return result;
 	}
 	
+	/* Metodo para el logueo de un empleado */	
+	private static boolean logIn(int id, String cad)
+	{
+		String passd = "";
+		
+		try
+		{
+			Statement st = con.createStatement();
+			String consulta = "select password from Empleado where id = " + id;
+			ResultSet rs = st.executeQuery(consulta);
+			
+			if(rs.next())
+				passd = rs.getString("password");			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return passd.compareTo(cad) == 0;	
+	}
+
+	/* Obtiene el id del empleado dado su nombre */
+	private static int getIdEmpleado(String empleado_nombre)
+	{
+		int id = -1;
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT id "
+					+ "FROM Empleado "
+					+ "WHERE nombre = '" + empleado_nombre + "'");
+			
+			if (rs.next())
+				id = rs.getInt("id");
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return id;
+	}
+	
+	/* Saluda e identifica al usuario */
+	public static Resultado<ArrayList<String>> saludo()
+	{
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(new Date());
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		String saludo = hour >= 0 && hour < 12 ? "Buenos días" : hour >= 12 && hour < 19 ? "Buenas tardes" : "Buenas noches";
+		
+		System.out.print(saludo + ", ");
+		
+		while (true)
+		{
+			System.out.println("¿Quién eres?");
+			String nombre = Vicky.sc.nextLine();
+		
+			int empleado_id = getIdEmpleado(nombre);
+			
+			if (empleado_id != -1)
+			{
+				System.out.println("Hola, " + nombre + ".");
+				System.out.println("¿Cuál es tu contraseña?");
+				
+				String passd = Vicky.sc.nextLine();
+				while (!logIn(empleado_id, passd))
+					System.out.println("Esa no es tu contraseña. Intenta de nuevo.");
+				
+				Vicky.empleado_id = empleado_id;
+				System.out.println("Bienvenido, ¿Qué puedo hacer por ti?");
+				break;
+			}
+			else
+				System.out.println("No conozco a ningún " + nombre + ". Intenta de nuevo.");
+		}
+		
+		return new Resultado<ArrayList<String>>();
+	}
+	
+	/* Obtiene el id de un puesto dado su nombre */
+	private static int getIdPuesto(String nombre)
+	{
+		int id = -1;
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT id "
+					+ "FROM Puesto "
+					+ "WHERE nombre = '" + nombre + "'");
+			
+			if (rs.next())
+				id = rs.getInt("id");
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return id;
+	}
+	
+	/* Obtiene los correos de los empleados con el puesto dado*/
+	public static Resultado<ArrayList<String>> getCorreo(String puesto)
+	{
+		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
+		
+		try
+		{
+			int puesto_id = getIdPuesto(puesto);
+			
+			if (puesto_id == -1)
+			{
+				result.Success = false;
+				result.Valor.add("No existe ese puesto.\n");
+				return result;
+			}
+			
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT email "
+					+ "FROM Empleado "
+					+ "WHERE puesto_id = " + puesto_id);
+			
+			while (rs.next())
+				result.Valor.add(rs.getString("email"));
+				
+			int n = result.Valor.size();
+			if (n == 0)
+			{
+				result.Success = false;
+				result.Valor.add("No exiten personas con ese puesto\n");
+			}
+			else
+			{
+				result.Success = true;
+				result.Valor.add(0, (n > 1 ? "Los correos son:\n" : "El correo es:\n"));
+			}
+		}
+		catch (SQLException e)
+		{
+			result.Success = false;
+			result.Valor.add(e.toString() + "\n");
+		}
+		
+		return result;
+	}
+	
+	/* Termina ejecución */
+	public static void adios()
+	{
+		System.out.println("Nos vemos pronto");
+		System.exit(0);
+	}
+	
 	/* Tells a joke */
-	public static Resultado<String> tellJoke()
+	public static Resultado<ArrayList<String>> tellJoke()
 	{
 		String[] chiste = {"Why do Java developers wear glasses? Because they can't C#",
 				"\"Knock, knock.\"\n\"Who’s there?\"\nvery long pause...\n\"Java.\"",
@@ -401,14 +597,66 @@ public class ChatBotController
 				"There are exactly two types of mathematical objects: trivial ones, and those which have not yet been proven."};
 	
 		Random rand = new Random(System.currentTimeMillis());
-		return new Resultado<String>(true, chiste[rand.nextInt(chiste.length)]);
+		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
+		result.Success = true;
+		result.Valor.add(chiste[rand.nextInt(chiste.length)] + "\n");
+		
+		return result;
 	}
 	
-	public static Resultado <String> autoconciente()
+	public static Resultado<ArrayList<String>> autoconciente()
 	{
 		String []conciente = {"¿Tú puedes demostrar que lo eres?","Es algo complicado",
-				"Eso es una pregunta díficil"};
+				"Esa es una pregunta díficil", "Ahm.. ¡Ardilla!", "La respuesta es... 42"};
 		Random rand = new Random(System.currentTimeMillis());
-		return new Resultado <String> (true, conciente[rand.nextInt(conciente.length)]);
+		
+		Resultado <ArrayList <String>> result = new Resultado <ArrayList <String>>(new ArrayList<String>());
+		result.Success = true;
+		result.Valor.add(conciente[rand.nextInt(conciente.length)] + "\n");
+		
+		return result;
+	}
+
+
+	
+	// auxiliares
+	public static ArrayList<String> getNombreEmpleados()
+	{
+		ArrayList<String> nombres = new ArrayList<String>();
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT nombre "
+						+ "FROM Empleado");
+			
+			while (rs.next())
+				nombres.add(rs.getString("nombre"));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return nombres;
+	}
+	
+	public static ArrayList<String> getNombreTareas()
+	{
+		ArrayList<String> nombres = new ArrayList<String>();
+		try
+		{
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT nombre "
+						+ "FROM Tarea");
+			
+			while (rs.next())
+				nombres.add(rs.getString("nombre"));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return nombres;
 	}
 }
