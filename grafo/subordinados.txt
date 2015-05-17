@@ -1,0 +1,6 @@
+%n
+$ quienes quien
+quien trabaja
+quienes trabaja
+trabaja para
+para %n

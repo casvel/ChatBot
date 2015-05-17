@@ -41,7 +41,14 @@ public class VickyHelper {
 		String method = null;
 		for (String v : AdjList.get(u))
 		{
-			if (DBVicky.Sinonimos.get(v) != null)
+			if (v.equals("%n") || v.equals("%t"))
+			{
+				DBVicky.param = word[i+1];
+				method = dfs(v, i+1);
+				if (method != null)
+					return method;
+			}
+			else if (DBVicky.Sinonimos.get(v) != null)
 			{
 				for (String sv : DBVicky.Sinonimos.get(v))
 					if (editDistance(word[i+1].toLowerCase(), sv) <= 1)
@@ -67,7 +74,26 @@ public class VickyHelper {
 	
 	public static Firma procesaQuery(String query)
 	{
-		query = "$ " + query.replace('¿', ' ').replace('?', ' ').replace('.', ' ').trim();
+		String aux = "";
+		boolean ok = false;
+		for (int i = 0; i < query.length(); ++i)
+		{
+			if (query.charAt(i) == '"')
+			{
+				ok = !ok;
+				continue;
+			}
+			
+			if (ok && query.charAt(i) == ' ')
+			{
+				aux = aux + ':';
+				continue;
+			}
+			aux += query.charAt(i);
+		}
+		
+		query = "$ " + aux.replace('¿', ' ').replace('?', ' ').replace('.', ' ').replace(',', ' ').trim();
+		
 		word = query.split(" ");
 		
 		/*for (int i = 0; i < word.length; ++i)
@@ -79,7 +105,7 @@ public class VickyHelper {
 			visit = new HashMap<String, Boolean>();	
 			AdjList = DBVicky.Grafo.get(i);
 			String terminal = dfs(word[0], 0);
-			if (terminal != null)
+			if (terminal != null && DBVicky.Terminales.get(i).get(terminal) != null)
 				return DBVicky.Terminales.get(i).get(terminal);
 		}
 		

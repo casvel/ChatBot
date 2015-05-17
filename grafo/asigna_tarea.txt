@@ -1,0 +1,8 @@
+%t
+$ asigname dame ponme quiero
+asigname la
+dame la
+ponme la
+quiero la
+la tarea
+tarea %t
