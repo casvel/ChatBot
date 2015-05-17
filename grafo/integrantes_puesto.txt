@@ -1,0 +1,16 @@
+equipo %p proyecto
+$ quién dime quisiera me
+quién conforma es
+dime quién
+conforma el
+es el
+el %p
+%p del
+del equipo
+quisiera saber
+saber quién
+me podrías gustaría
+podrías decir
+decir quién
+gustaría saber
+saber quién

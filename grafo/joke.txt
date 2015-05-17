@@ -1,6 +1,6 @@
 chiste joke
-$ cuentame cuenta dime tell di
-cuentame un
+$ cuéntame cuenta dime tell di
+cuéntame un
 cuenta un
 dime un
 tell me

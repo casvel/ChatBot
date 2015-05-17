@@ -94,30 +94,36 @@ public class ChatBotController
 	
 	/* Obtiene todas las tareas con estado = estado
 	 * Si estado == -1 regresa todas las tareas */
-	public static Resultado<ArrayList<String>> getTareas(int estado)
+	public static Resultado<ArrayList<String>> getTareas(String estado)
 	{
 		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		try
 		{
 			Statement st = con.createStatement();
 			ResultSet rs;
-			if (estado != -1)
+			if (estado != "")
 				rs = st.executeQuery("SELECT nombre "
 					+ "FROM Tarea "
-					+ "WHERE estado =" + estado + "");
+					+ "WHERE estado = '" + estado + "'");
 			else
 				rs = st.executeQuery("SELECT nombre "
 					+ "FROM Tarea");
 			
-			if (estado != -1)
-				result.Valor.add("Las tareas en ese estado son:\n");
+			if (estado != "")
+				result.Valor.add("Las tareas " + estado + " son:\n");
 			else
 				result.Valor.add("Todas las tareas son:\n");
 			
 			while (rs.next())
-				result.Valor.add(rs.getString("nombre"));
-			
+				result.Valor.add(rs.getString("nombre") + "\n");
 			result.Success = true;
+			
+			if (result.Valor.size() == 1)
+			{
+				result.Success = false;
+				result.Valor.clear();
+				result.Valor.add("No hay tareas en ese estado\n");
+			}
 		}
 		catch (SQLException e)
 		{
@@ -524,7 +530,7 @@ public class ChatBotController
 	}
 	
 	/* Obtiene los correos de los empleados con el puesto dado*/
-	public static Resultado<ArrayList<String>> getCorreo(String puesto)
+	public static Resultado<ArrayList<String>> getCorreoPuesto(String puesto)
 	{
 		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
 		
@@ -545,7 +551,7 @@ public class ChatBotController
 					+ "WHERE puesto_id = " + puesto_id);
 			
 			while (rs.next())
-				result.Valor.add(rs.getString("email"));
+				result.Valor.add(rs.getString("email") + "\n");
 				
 			int n = result.Valor.size();
 			if (n == 0)
@@ -558,6 +564,42 @@ public class ChatBotController
 				result.Success = true;
 				result.Valor.add(0, (n > 1 ? "Los correos son:\n" : "El correo es:\n"));
 			}
+		}
+		catch (SQLException e)
+		{
+			result.Success = false;
+			result.Valor.add(e.toString() + "\n");
+		}
+		
+		return result;
+	}
+
+	/* Obtiene el correo del empleado con nombre = nombre_empleado*/
+	public static Resultado<ArrayList<String>> getCorreoNombre(String nombre_empleado)
+	{
+		Resultado<ArrayList<String>> result = new Resultado<ArrayList<String>>(new ArrayList<String>());
+		
+		try
+		{
+			int empleado_id = getIdEmpleado(nombre_empleado);
+			
+			if (empleado_id == -1)
+			{
+				result.Success = false;
+				result.Valor.add("No existe esa persona.\n");
+				return result;
+			}
+			
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("SELECT email "
+					+ "FROM Empleado "
+					+ "WHERE id = " + empleado_id);
+			
+			result.Valor.add("Su correo es:\n");
+			while (rs.next())
+				result.Valor.add(rs.getString("email") + "\n");
+			result.Success = true;
+
 		}
 		catch (SQLException e)
 		{

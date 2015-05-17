@@ -35,7 +35,7 @@ public class Vicky
 					Resultado <ArrayList <String>> result;
 					if (firma.args.get(0) != null)
 					{
-						if (firma.args.get(0).equals("%n") || firma.args.get(0).equals("%t"))
+						if (firma.args.get(0).charAt(0) == '%')
 						{
 							ArrayList<String> nargs = new ArrayList<String>();
 							nargs.add(DBVicky.param);

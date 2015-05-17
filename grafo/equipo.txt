@@ -1,9 +1,8 @@
 equipo desarrollo
-$ quienes quien cuales dime me quisiera
-quienes son
-quien conforma
-cuales son
-dime quienes los
+$ quiénes quién dime me quisiera
+quiénes son conforma
+quién conforma
+dime quiénes los
 son los
 conforma el
 los integrantes
@@ -16,4 +15,4 @@ me puedes
 puedes decir
 decir quienes
 quisiera saber
-saber cuales quienes
+saber quiénes quién
