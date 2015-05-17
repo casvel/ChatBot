@@ -1,6 +1,6 @@
 wifi internet
-$ cual dime quiero
-cual es
+$ cuál dime quiero
+cuál es
 dime la
 es la
 la contraseña

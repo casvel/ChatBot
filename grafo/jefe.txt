@@ -1,7 +1,7 @@
 %n
-$ quien para 
-para quien
-quien es trabaja
+$ quién para 
+para quién
+quién es trabaja
 es el
 el jefe encargado
 jefe de

@@ -15,18 +15,13 @@ public class DBVicky
 	{
 		Sinonimos = new HashMap<String, String[]>();
 		
-		Sinonimos.put("lider", new String[]{"lider", "líder", "encargado", "jefe"});
-		Sinonimos.put("quien", new String[]{"quien", "quién"});
-		Sinonimos.put("cuentame", new String[]{"cuentame", "cuéntame"});
-		Sinonimos.put("quienes", new String[]{"quienes", "quiénes"});
+		Sinonimos.put("líder", new String[]{"líder", "encargado", "jefe"});
 		Sinonimos.put("integrantes", new String[]{"miembros", "integrantes"});
 		Sinonimos.put("puedes", new String[]{"puedes", "podrías"});
-		Sinonimos.put("equipo", new String[]{"equipo", "área", "area", "departamento"});
-		Sinonimos.put("dias", new String[]{"dias", "días"});
-		Sinonimos.put("que", new String[]{"que", "qué"});
-		Sinonimos.put("como", new String[]{"como", "cómo"});
-		Sinonimos.put("adios", new String[]{"adiós", "adios", "bye", "chao"});
-		Sinonimos.put("termine", new String[]{"termine", "terminé", "acabe", "acabé", "finalicé", "finalice"});
+		Sinonimos.put("equipo", new String[]{"equipo", "área", "departamento"});
+		Sinonimos.put("adiós", new String[]{"adiós", "bye", "chao"});
+		Sinonimos.put("terminé", new String[]{"terminé", "acabé", "finalicé"});
+		Sinonimos.put("quisiera", new String[]{"quisiera", "quiero"});
 	}
 	
 	private static HashMap<String, ArrayList<String>> creaGrafo(String archivo, String[] argumentos, Method method) throws NoSuchMethodException, SecurityException, IOException
@@ -76,12 +71,10 @@ public class DBVicky
 		
 		// Saludo //
 		Grafo.add(creaGrafo("saludo.txt", new String[]{null}, ChatBotController.class.getMethod("saludo")));
-		// Lider del proyecto //
-		Grafo.add(creaGrafo("lider.txt", new String[]{"Lider"}, ChatBotController.class.getMethod("getEmpleados", String.class)));
+		// Integrantes por puesto //
+		Grafo.add(creaGrafo("integrantes_puesto.txt", new String[]{"%p"}, ChatBotController.class.getMethod("getEmpleados", String.class)));
 		// Integrantes equipo //
 		Grafo.add(creaGrafo("equipo.txt", new String[]{""}, ChatBotController.class.getMethod("getEmpleados", String.class)));
-		// Programador //
-		Grafo.add(creaGrafo("programadores.txt", new String[]{"Programador"}, ChatBotController.class.getMethod("getEmpleados", String.class)));
 		// Chiste //
 		Grafo.add(creaGrafo("joke.txt", new String[]{null}, ChatBotController.class.getMethod("tellJoke")));
 		// Adiós //
@@ -100,6 +93,12 @@ public class DBVicky
 		Grafo.add(creaGrafo("asigna_tarea.txt", new String[]{"%t"}, ChatBotController.class.getMethod("setTarea", String.class)));
 		// Termina tarea //
 		Grafo.add(creaGrafo("termina_tarea.txt", new String[]{null}, ChatBotController.class.getMethod("terminarTareaEmpleado")));
+		// Correo puesto //
+		Grafo.add(creaGrafo("correo_puesto.txt", new String[]{"%p"}, ChatBotController.class.getMethod("getCorreoPuesto", String.class)));
+		// Correo usuario //
+		Grafo.add(creaGrafo("correo_nombre.txt", new String[]{"%n"}, ChatBotController.class.getMethod("getCorreoNombre", String.class)));
+		// Tareas //
+		Grafo.add(creaGrafo("tareas.txt", new String[]{"%e"}, ChatBotController.class.getMethod("getTareas", String.class)));
 
 		
 		/*for (String u : Grafo.get(Grafo.size()-1).keySet())

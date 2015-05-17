@@ -41,7 +41,7 @@ public class VickyHelper {
 		String method = null;
 		for (String v : AdjList.get(u))
 		{
-			if (v.equals("%n") || v.equals("%t"))
+			if (v.charAt(0) == '%')
 			{
 				DBVicky.param = word[i+1];
 				method = dfs(v, i+1);
