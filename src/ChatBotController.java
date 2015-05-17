@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import java.io.Console;
 
 public class ChatBotController 
 {
@@ -493,6 +494,19 @@ public class ChatBotController
 				System.out.println("¿Cuál es tu contraseña?");
 				
 				String passd = Vicky.sc.nextLine();
+				
+				/* Esto no funciona
+				Console console = System.console();
+				
+				if (console == null) {
+			        System.out.println("Couldn't get Console instance");
+			        System.exit(0);
+			    }
+				
+				char passwordArray[] = console.readPassword("¿Cuál es tu password?");
+				
+				String passd = new String(passwordArray);*/
+				
 				while (!logIn(empleado_id, passd)){
 					System.out.println("Esa no es tu contraseña. Intenta de nuevo.");
 					//Creo que aqui faltaba lo siguiente:
