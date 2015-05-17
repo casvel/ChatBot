@@ -493,9 +493,11 @@ public class ChatBotController
 				System.out.println("¿Cuál es tu contraseña?");
 				
 				String passd = Vicky.sc.nextLine();
-				while (!logIn(empleado_id, passd))
+				while (!logIn(empleado_id, passd)){
 					System.out.println("Esa no es tu contraseña. Intenta de nuevo.");
-				
+					//Creo que aqui faltaba lo siguiente:
+					passd = Vicky.sc.nextLine();
+				}
 				Vicky.empleado_id = empleado_id;
 				System.out.println("Bienvenido, ¿Qué puedo hacer por ti?");
 				break;
