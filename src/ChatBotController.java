@@ -49,9 +49,18 @@ public class ChatBotController
 				num++;
 				result.Valor.add(rs.getString("id") + ". " + rs.getString("nombre") + ' ' + rs.getString("paterno") + ' ' + rs.getString("materno") + "\n");
 			}
-			result.Valor.add(0, (num > 1 ? "Las personas" : "La persona") + " con el puesto de " + puesto.toLowerCase() + (num > 1 ? " son" : " es") + ":\n");
 			
-			result.Success = true;
+			if (num == 0)
+			{
+				result.Success = false;
+				result.Valor.add("No existe nadie con ese puesto\n");
+			}
+			else
+			{
+				result.Valor.add(0, (num > 1 ? "Las personas" : "La persona") + " con el puesto de " + puesto.toLowerCase() + (num > 1 ? " son" : " es") + ":\n");
+				result.Success = true;
+				
+			}
 		}
 		catch (SQLException e)
 		{
@@ -159,9 +168,9 @@ public class ChatBotController
 	}
 	
 	/* Regresa el estado de una tarea */
-	private static int getEstadoTarea(int tarea_id)
+	private static String getEstadoTarea(int tarea_id)
 	{
-		int estado = -1;
+		String estado = "";
 		try
 		{
 			Statement st = con.createStatement();
@@ -170,7 +179,7 @@ public class ChatBotController
 					+ "WHERE id = " + tarea_id);
 			
 			if (rs.next())
-				estado = rs.getInt("estado");
+				estado = rs.getString("estado");
 		}
 		catch (SQLException e)
 		{
@@ -221,8 +230,8 @@ public class ChatBotController
 			return result;
 		}
 		
-		int tarea_estado = getEstadoTarea(tarea_id);
-		if (tarea_estado != 0)
+		String tarea_estado = getEstadoTarea(tarea_id);
+		if (!tarea_estado.equals("pendientes"))
 		{
 			result.Success = false;
 			result.Valor.add("Tarea ya completada o en proceso.\n");
@@ -518,8 +527,8 @@ public class ChatBotController
 				}
 				Vicky.empleado_id = empleado_id;
 				
-				String []tempo = {"Bienvenido, ¿Qué puedo hacer por ti?","Qué tal, en que puedo servirte, "+individuo+"?",
-						"Hola, ¿Cómo te puedo ayudar?","Dime, "+individuo +" ¿qué necesitas?"};
+				String []tempo = {"Bienvenido, ¿Qué puedo hacer por ti?","Qué tal, ¿En qué puedo servirte, "+individuo+"?",
+						"Hola, ¿Cómo te puedo ayudar?","Dime, "+individuo +" ¿Qué necesitas?"};
 				Random rand = new Random(System.currentTimeMillis());
 				
 				System.out.println(tempo[rand.nextInt(tempo.length)]) ;

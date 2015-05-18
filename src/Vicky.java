@@ -62,15 +62,20 @@ public class Vicky
 			{
 				confused += 1;
 				
-				String []tempo ={"Lo siento, no te entiendo, vuelve a preguntar", "No comprendo, pregunta de nuevo",
-						"Mmm, pregunta otra vez","puedes volver a preguntar?","jeje, no entiendo, puedes preguntar de nuevo?",
-						"¿quieres preguntar nuevamente?","reformula tu pregunta, please ;)","soy una chica lista pero"
-								+ " no te estoy entendiendo"};
+				String []tempo ={"Lo siento, no te entiendo. Vuelve a preguntar", 
+						"No comprendo. Pregunta de nuevo",
+						"Mmm, pregunta otra vez",
+						"¿Puedes volver a preguntar?",
+						"Jeje, no entiendo. ¿Puedes preguntar de nuevo?",
+						"¿Quieres preguntar nuevamente?",
+						"Reformula tu pregunta, please ;)",
+						"Soy una chica lista pero no te estoy entendiendo"};
+				
 				Random rand = new Random(System.currentTimeMillis());
 				if(confused == 3)
 					System.out.println(tempo[tempo.length-1]);
 				else
-				System.out.println(tempo[rand.nextInt(tempo.length)]) ;
+					System.out.println(tempo[rand.nextInt(tempo.length)]) ;
 				
 			}
 		}
