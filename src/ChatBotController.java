@@ -517,7 +517,14 @@ public class ChatBotController
 					passd = Vicky.sc.nextLine();
 				}
 				Vicky.empleado_id = empleado_id;
-				System.out.println("Bienvenido, ¿Qué puedo hacer por ti?");
+				
+				String []tempo = {"Bienvenido, ¿Qué puedo hacer por ti?","Qué tal, en que puedo servirte, "+individuo+"?",
+						"Hola, ¿Cómo te puedo ayudar?","Dime, "+individuo +" ¿qué necesitas?"};
+				Random rand = new Random(System.currentTimeMillis());
+				
+				System.out.println(tempo[rand.nextInt(tempo.length)]) ;
+				
+				System.out.println();
 				break;
 			}
 			else
