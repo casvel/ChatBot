@@ -3,3 +3,4 @@ $ hola buenos buenas qué
 buenos días
 buenas noches tardes
 qué tal onda ondilla
+hola %e

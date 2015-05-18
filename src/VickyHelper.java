@@ -30,11 +30,12 @@ public class VickyHelper {
 	private static String dfs(String u, int i)
 	{
 		//System.out.println(u);
-		if (visit.get(u) != null)
-			return null;
 		
 		if (i == word.length - 1)
 			return u;
+		
+		if (visit.get(u) != null || AdjList.get(u) == null)
+			return null;
 		
 		visit.put(u, true);
 		
@@ -104,6 +105,7 @@ public class VickyHelper {
 		{
 			visit = new HashMap<String, Boolean>();	
 			AdjList = DBVicky.Grafo.get(i);
+			//System.out.println(DBVicky.Terminales.get(i).toString());
 			String terminal = dfs(word[0], 0);
 			if (terminal != null && DBVicky.Terminales.get(i).get(terminal) != null)
 				return DBVicky.Terminales.get(i).get(terminal);
