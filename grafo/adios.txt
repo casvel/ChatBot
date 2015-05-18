@@ -1,6 +1,9 @@
-adiós vemos cámara sale voy
-$ adiós nos hasta ya sale cámara
+adiós vemos %e sale voy
+$ adiós nos hasta ya sale cámara órale
 ya me 
 me voy
+sale %e
+cámara %e
 nos vemos
+órale %e
 hasta luego
