@@ -7,12 +7,13 @@ public class Vicky
 {
 	static Scanner sc = new Scanner(System.in);
 	static int empleado_id = -1;
+	public static int confused = 1;
 	
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
 		ChatBotController.Conecta();
 		DBVicky.init();
-		
+			
 		while (true)
 		{
 			String query = sc.nextLine();
@@ -55,10 +56,22 @@ public class Vicky
 					for (String r : result.Valor)
 						System.out.print(r);
 				}
+				confused = 0;
 			}
 			else
 			{
-				System.out.println("Lo siento, no te entiendo");
+				confused += 1;
+				
+				String []tempo ={"Lo siento, no te entiendo, vuelve a preguntar", "No comprendo, pregunta de nuevo",
+						"Mmm, pregunta otra vez","puedes volver a preguntar?","jeje, no entiendo, puedes preguntar de nuevo?",
+						"¿quieres preguntar nuevamente?","reformula tu pregunta, please ;)","soy una chica lista pero"
+								+ " no te estoy entendiendo"};
+				Random rand = new Random(System.currentTimeMillis());
+				if(confused == 3)
+					System.out.println(tempo[tempo.length-1]);
+				else
+				System.out.println(tempo[rand.nextInt(tempo.length)]) ;
+				
 			}
 		}
 	}
