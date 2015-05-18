@@ -449,6 +449,8 @@ public class ChatBotController
 		return passd.compareTo(cad) == 0;	
 	}
 
+	public static String individuo;
+	
 	/* Obtiene el id del empleado dado su nombre */
 	private static int getIdEmpleado(String empleado_nombre)
 	{
@@ -488,7 +490,8 @@ public class ChatBotController
 		{
 			System.out.println("¿Quién eres?");
 			String nombre = Vicky.sc.nextLine();
-		
+			individuo = nombre;
+			
 			int empleado_id = getIdEmpleado(nombre);
 			
 			if (empleado_id != -1)
@@ -632,7 +635,10 @@ public class ChatBotController
 	/* Termina ejecución */
 	public static void adios()
 	{
-		System.out.println("Nos vemos pronto");
+		String []tempo = {"Nos vemos pronto","Hasta luego","Adiós joven","Bye"};
+		Random rand = new Random(System.currentTimeMillis());
+		
+		System.out.println(tempo[rand.nextInt(tempo.length)] + " " + individuo) ;
 		System.exit(0);
 	}
 	
@@ -668,7 +674,8 @@ public class ChatBotController
 	public static Resultado<ArrayList<String>> autoconciente()
 	{
 		String []conciente = {"¿Tú puedes demostrar que lo eres?","Es algo complicado",
-				"Esa es una pregunta díficil", "Ahm.. ¡Ardilla!", "La respuesta es... 42"};
+				"Esa es una pregunta díficil", "Ahm.. ¡Ardilla!", "La respuesta es... 42","jeje, creo que no puedo"
+						+ "responder eso"};
 		Random rand = new Random(System.currentTimeMillis());
 		
 		Resultado <ArrayList <String>> result = new Resultado <ArrayList <String>>(new ArrayList<String>());

@@ -21,7 +21,7 @@ public class DBVicky
 		Sinonimos.put("equipo", new String[]{"equipo", "área", "departamento"});
 		Sinonimos.put("adiós", new String[]{"adiós", "bye", "chao", "nos vemos"});
 		Sinonimos.put("terminé", new String[]{"terminé", "acabé", "finalicé"});
-		Sinonimos.put("quisiera", new String[]{"quisiera", "quiero", "dame"});
+		Sinonimos.put("quisiera", new String[]{"quisiera", "quiero", "dame","gustaría"});
 	}
 	
 	private static HashMap<String, ArrayList<String>> creaGrafo(String archivo, String[] argumentos, Method method) throws NoSuchMethodException, SecurityException, IOException
