@@ -49,9 +49,18 @@ public class ChatBotController
 				num++;
 				result.Valor.add(rs.getString("id") + ". " + rs.getString("nombre") + ' ' + rs.getString("paterno") + ' ' + rs.getString("materno") + "\n");
 			}
-			result.Valor.add(0, (num > 1 ? "Las personas" : "La persona") + " con el puesto de " + puesto.toLowerCase() + (num > 1 ? " son" : " es") + ":\n");
 			
-			result.Success = true;
+			if (num == 0)
+			{
+				result.Success = false;
+				result.Valor.add("No existe nadie con ese puesto\n");
+			}
+			else
+			{
+				result.Valor.add(0, (num > 1 ? "Las personas" : "La persona") + " con el puesto de " + puesto.toLowerCase() + (num > 1 ? " son" : " es") + ":\n");
+				result.Success = true;
+				
+			}
 		}
 		catch (SQLException e)
 		{
@@ -517,7 +526,14 @@ public class ChatBotController
 					passd = Vicky.sc.nextLine();
 				}
 				Vicky.empleado_id = empleado_id;
-				System.out.println("Bienvenido, ¿Qué puedo hacer por ti?");
+				
+				String []tempo = {"Bienvenido, ¿Qué puedo hacer por ti?","Qué tal, ¿En qué puedo servirte, "+individuo+"?",
+						"Hola, ¿Cómo te puedo ayudar?","Dime, "+individuo +" ¿Qué necesitas?"};
+				Random rand = new Random(System.currentTimeMillis());
+				
+				System.out.println(tempo[rand.nextInt(tempo.length)]) ;
+				
+				System.out.println();
 				break;
 			}
 			else
