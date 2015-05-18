@@ -1,11 +1,11 @@
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-import java.io.Console;
 
 public class ChatBotController 
 {
 	private static Connection con;
+	private static String individuo;
 	
 	/* Conexión con la base de datos*/
 	static void Conecta()
@@ -448,8 +448,6 @@ public class ChatBotController
 		
 		return passd.compareTo(cad) == 0;	
 	}
-
-	public static String individuo;
 	
 	/* Obtiene el id del empleado dado su nombre */
 	private static int getIdEmpleado(String empleado_nombre)
