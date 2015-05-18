@@ -479,7 +479,10 @@ public class ChatBotController
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		String saludo = hour >= 0 && hour < 12 ? "Buenos días" : hour >= 12 && hour < 19 ? "Buenas tardes" : "Buenas noches";
 		
-		System.out.print(saludo + ", ");
+		String []holas = {", mi nombre es Vicky", ", me llamo Vicky", ", soy Vicky"};
+		Random aux = new Random(System.currentTimeMillis());
+		
+		System.out.print(saludo + holas[aux.nextInt(holas.length)]+", ");
 		
 		while (true)
 		{
