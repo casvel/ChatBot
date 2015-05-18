@@ -159,9 +159,9 @@ public class ChatBotController
 	}
 	
 	/* Regresa el estado de una tarea */
-	private static int getEstadoTarea(int tarea_id)
+	private static String getEstadoTarea(int tarea_id)
 	{
-		int estado = -1;
+		String estado = "";
 		try
 		{
 			Statement st = con.createStatement();
@@ -170,7 +170,7 @@ public class ChatBotController
 					+ "WHERE id = " + tarea_id);
 			
 			if (rs.next())
-				estado = rs.getInt("estado");
+				estado = rs.getString("estado");
 		}
 		catch (SQLException e)
 		{
@@ -221,8 +221,8 @@ public class ChatBotController
 			return result;
 		}
 		
-		int tarea_estado = getEstadoTarea(tarea_id);
-		if (tarea_estado != 0)
+		String tarea_estado = getEstadoTarea(tarea_id);
+		if (!tarea_estado.equals("pendientes"))
 		{
 			result.Success = false;
 			result.Valor.add("Tarea ya completada o en proceso.\n");
