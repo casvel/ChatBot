@@ -58,6 +58,8 @@ public class Vicky
 				}
 				confused = 0;
 			}
+			else if(query.compareTo("Gracias") == 0 || query.compareTo("gracias") == 0 || query.compareTo("ok") == 0 || query.compareTo("Ok") == 0)
+				System.out.println("De nada :)");
 			else
 			{
 				confused += 1;
@@ -68,12 +70,11 @@ public class Vicky
 						"¿Puedes volver a preguntar?",
 						"Jeje, no entiendo. ¿Puedes preguntar de nuevo?",
 						"¿Quieres preguntar nuevamente?",
-						"Reformula tu pregunta, please ;)",
-						"Soy una chica lista pero no te estoy entendiendo"};
+						"Reformula tu pregunta, please ;)"};
 				
 				Random rand = new Random(System.currentTimeMillis());
 				if(confused == 3)
-					System.out.println(tempo[tempo.length-1]);
+					System.out.println("Soy una chica lista pero no te estoy entendiendo");
 				else
 					System.out.println(tempo[rand.nextInt(tempo.length)]) ;
 				
